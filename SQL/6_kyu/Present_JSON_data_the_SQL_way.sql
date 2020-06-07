@@ -13,17 +13,19 @@
 -- Order the result by the first_name, and last_name columns
 
 
-SELECT data ->> 'first_name' AS first_name,
-        data ->> 'last_name' AS last_name,
-        EXTRACT(
-            YEAR FROM AGE(NOW(), (data ->> 'date_of_birth')::TIMESTAMP)
-            )::INT AS age,
-        CASE WHEN data ->> 'private' = 'true' THEN 'Hidden' 
-            WHEN json_array_length(data -> 'email_addresses') = 0 
-                    AND data ->> 'private' = 'false' THEN 'None' 
-            ELSE (
-                SELECT * FROM json_array_elements_text(data -> 'email_addresses') LIMIT 1
-                ) 
-            END AS email_address
+SELECT 
+    data ->> 'first_name' AS first_name,
+    data ->> 'last_name' AS last_name,
+    EXTRACT(
+        YEAR FROM AGE(NOW(), (data ->> 'date_of_birth')::TIMESTAMP)
+        )::INT AS age,
+    CASE 
+        WHEN data ->> 'private' = 'true' THEN 'Hidden' 
+        WHEN json_array_length(data -> 'email_addresses') = 0 
+                AND data ->> 'private' = 'false' THEN 'None' 
+        ELSE (
+            SELECT * FROM json_array_elements_text(data -> 'email_addresses') LIMIT 1
+            ) 
+        END AS email_address
 FROM users
 ORDER BY 1, 2
