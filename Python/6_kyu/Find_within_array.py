@@ -10,7 +10,7 @@
 # If the function given returns false for all members of the sequence, your 
 # function should return -1.
 
-
+   
 def find_in_array(seq, predicate): 
     for idx, val in enumerate(seq):
         if predicate(val, idx):
